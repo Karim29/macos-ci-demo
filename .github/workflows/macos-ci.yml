@@ -1,0 +1,35 @@
+name: macOS CI Workflow  # This is the name of your workflow.
+
+on:
+  push:
+    branches:
+      - main  # Runs when changes are pushed to the 'main' branch.
+  pull_request:
+    branches:
+      - main  # Runs when a pull request targets the 'main' branch.
+
+jobs:
+  build:
+    runs-on: macos-latest  # Use the latest macOS environment.
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Checkout the repository code.
+
+      - name: Set Up Xcode
+        run: xcode-select --install  # Install Xcode Command Line Tools.
+
+      - name: Build Your macOS/iOS App
+        run: |
+          xcodebuild clean build \
+          -workspace YourApp.xcworkspace \  # Replace with your .xcworkspace file
+          -scheme YourAppScheme \          # Replace with your scheme name
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+
+      - name: Test Your App
+        run: |
+          xcodebuild test \
+          -workspace YourApp.xcworkspace \  # Replace with your .xcworkspace file
+          -scheme YourAppScheme \          # Replace with your scheme name
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
